@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء أيقونة SAM PRO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .icon-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .icon {
+            width: 256px;
+            height: 256px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .icon-text {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .icon-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon-container">
+        <div class="icon" id="icon">
+            <div class="icon-text">SAM</div>
+            <div class="icon-subtitle">PRO</div>
+        </div>
+        <h3>أيقونة SAM PRO</h3>
+        <p>انقر على الأزرار أدناه لتحميل الأيقونة بأحجام مختلفة:</p>
+        <button class="download-btn" onclick="downloadIcon(256)">256x256 PNG</button>
+        <button class="download-btn" onclick="downloadIcon(128)">128x128 PNG</button>
+        <button class="download-btn" onclick="downloadIcon(64)">64x64 PNG</button>
+        <button class="download-btn" onclick="downloadIcon(32)">32x32 PNG</button>
+        <p><small>استخدم هذه الأيقونات في مجلد assets/ للتطبيق</small></p>
+    </div>
+
+    <script>
+        function downloadIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // إنشاء التدرج
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+
+            // رسم الخلفية
+            ctx.fillStyle = gradient;
+            ctx.roundRect(0, 0, size, size, size * 0.08);
+            ctx.fill();
+
+            // رسم النص
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // النص الرئيسي
+            ctx.font = `bold ${size * 0.19}px Arial`;
+            ctx.fillText('SAM', size / 2, size * 0.42);
+            
+            // النص الفرعي
+            ctx.font = `bold ${size * 0.06}px Arial`;
+            ctx.fillText('PRO', size / 2, size * 0.62);
+
+            // تحميل الصورة
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sam-pro-icon-${size}x${size}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // إضافة دعم roundRect للمتصفحات القديمة
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+    </script>
+</body>
+</html>
