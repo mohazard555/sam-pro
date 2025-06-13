@@ -1,0 +1,69 @@
+name: Build SAM PRO EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        
+    - name: Build EXE
+      run: |
+        pyinstaller --onefile --windowed --name "SAM PRO" --icon "assets/sam-pro-icon-256x256.png" --add-data "index.html;." --add-data "static;static" --add-data "assets;assets" run_sam_pro.py
+        
+    - name: Upload EXE artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SAM-PRO-Windows
+        path: dist/SAM PRO.exe
+        
+    - name: Create Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.0
+        name: SAM PRO v1.0.0
+        body: |
+          ## SAM PRO - نظام محاسبة شامل
+          
+          ### 🎉 الإصدار الأول من برنامج سطح المكتب
+          
+          **المميزات:**
+          - ✅ برنامج سطح مكتب كامل
+          - ✅ يعمل بدون تثبيت Python
+          - ✅ واجهة ويب حديثة
+          - ✅ جميع مميزات SAM PRO
+          
+          **كيفية الاستخدام:**
+          1. حمل ملف `SAM PRO.exe`
+          2. انقر مرتين لتشغيل البرنامج
+          3. سيفتح التطبيق في المتصفح تلقائياً
+          
+          **الدعم الفني:**
+          - المطور: MOHANNAD AHMAD
+          - الهاتف: +963-998-171-954
+          
+        files: |
+          dist/SAM PRO.exe
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
